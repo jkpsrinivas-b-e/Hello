@@ -1,10 +1,30 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Compile and Clean') {
             steps {
-                sh 'echo "Hello world!"'
-            }
-        }
+                sh "mvn clean compile"
+}
+}
+stage('Test'){
+steps {
+sh "mvn test site"
+}
+}
+        post{
+            always {
+junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+} }I
     }
+stage('Deploy') {
+steps {
+sh "mvn package"
+}
+}
+stage('Archving') {
+steps {
+archiveArtifacts '**/target/*.jar'
+}
+}
+}
 }
